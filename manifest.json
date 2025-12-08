@@ -3,8 +3,8 @@
 	"name": "Remember Code Block Language",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Automatically remembers and inserts the last used language name in code blocks",
-	"author": "",
-	"authorUrl": "",
+	"description": "Remember the language of the last code block you used and automatically insert it next time",
+	"author": "Junyoung Bang",
+	"authorUrl": "https://github.com/junyoungbang",
 	"isDesktopOnly": false
 }
