@@ -3,7 +3,7 @@
 	"name": "Remember Code Block Language",
 	"version": "1.0.2",
 	"minAppVersion": "0.15.0",
-	"description": "Remember the language of the last code block you used and automatically insert it next time",
+	"description": "Remember the language of the last code block you used and automatically insert it next time.",
 	"author": "Junyoung Bang",
 	"authorUrl": "https://github.com/junyoungbang",
 	"isDesktopOnly": false
