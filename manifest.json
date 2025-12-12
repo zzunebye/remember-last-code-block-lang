@@ -1,7 +1,7 @@
 {
 	"id": "remember-code-block-lang",
 	"name": "Remember Code Block Language",
-	"version": "1.0.2",
+	"version": "1.0.4",
 	"minAppVersion": "0.15.0",
 	"description": "Remember the language of the last code block you used and automatically insert it next time.",
 	"author": "Junyoung Bang",
