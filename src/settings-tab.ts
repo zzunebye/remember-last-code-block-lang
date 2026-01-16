@@ -14,7 +14,9 @@ export class RememberCodeBlockLangSettingTab extends PluginSettingTab {
 
         containerEl.empty();
 
-        containerEl.createEl('h2', { text: 'Remember Code Block Language Settings' });
+        new Setting(containerEl)
+            .setName('Remember code block language')
+            .setHeading();
 
         new Setting(containerEl)
             .setName('Enable auto-injection')
@@ -30,7 +32,7 @@ export class RememberCodeBlockLangSettingTab extends PluginSettingTab {
             .setName('Default language')
             .setDesc('Default language to use when no previous language is remembered (optional)')
             .addText(text => text
-                .setPlaceholder('e.g., javascript')
+                .setPlaceholder('e.g., JavaScript')
                 .setValue(this.plugin.settings.defaultLanguage)
                 .onChange(async (value) => {
                     this.plugin.settings.defaultLanguage = value;
