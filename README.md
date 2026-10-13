@@ -8,6 +8,7 @@ Just start typing a code block (```) and it'll automatically insert your last us
 
 - Automatically remembers your last used code block language
 - Command to insert a code block with the remembered language
+- Commands to add a language to code blocks without one in the current note, using an input form or selected text
 - Customizable default language
 
 ## Installation

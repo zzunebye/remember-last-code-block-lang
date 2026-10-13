@@ -2,6 +2,7 @@ import { Editor, MarkdownView, Plugin } from 'obsidian';
 import { RememberCodeBlockLangSettings, DEFAULT_SETTINGS } from './settings';
 import { RememberCodeBlockLangSettingTab } from './settings-tab';
 import { createRememberCodeBlockLangExtension } from './editor/extension';
+import { registerCodeBlockLanguageCommands } from './commands/code-block-language';
 
 export default class RememberCodeBlockLangPlugin extends Plugin {
     settings: RememberCodeBlockLangSettings;
@@ -11,6 +12,7 @@ export default class RememberCodeBlockLangPlugin extends Plugin {
 
         // Register the CodeMirror 6 extension
         this.registerEditorExtension(createRememberCodeBlockLangExtension(this));
+        registerCodeBlockLanguageCommands(this);
 
         // Add command to insert a code block with the remembered language
         this.addCommand({
