@@ -1,5 +1,6 @@
 import { EditorView, ViewUpdate } from '@codemirror/view';
 import type RememberCodeBlockLangPlugin from '../main';
+import { normalizeLanguageIdentifier } from '../utils/language-identifier';
 
 // Debounce helper
 function debounce<T extends (...args: unknown[]) => void>(
@@ -45,10 +46,10 @@ export function createLanguageTracker(plugin: RememberCodeBlockLangPlugin) {
 
                 // Check if this line is a code block opening with a language
                 // Pattern: ``` followed by word characters (language identifier)
-                const match = lineText.match(/^```(\w+)/);
+                const match = lineText.match(/^`{3,}([^\s`]+)/);
 
                 if (match && match[1]) {
-                    const language = match[1];
+                    const language = normalizeLanguageIdentifier(match[1]);
                     // Save the language (debounced)
                     debouncedSave(language);
                     // Only process the first match to avoid redundant saves

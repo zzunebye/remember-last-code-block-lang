@@ -4,6 +4,7 @@ import { RememberCodeBlockLangSettingTab } from './settings-tab';
 import { createRememberCodeBlockLangExtension } from './editor/extension';
 import { processPlainCodeBlocks } from './utils/code-block-processor';
 import { registerCodeBlockLanguageCommands } from './commands/code-block-language';
+import { normalizeLanguageIdentifier } from './utils/language-identifier';
 
 export default class RememberCodeBlockLangPlugin extends Plugin {
     settings: RememberCodeBlockLangSettings;
@@ -86,6 +87,8 @@ export default class RememberCodeBlockLangPlugin extends Plugin {
 
     async loadSettings() {
         this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+        this.settings.lastUsedLanguage = normalizeLanguageIdentifier(this.settings.lastUsedLanguage);
+        this.settings.defaultLanguage = normalizeLanguageIdentifier(this.settings.defaultLanguage);
     }
 
     async saveSettings() {
