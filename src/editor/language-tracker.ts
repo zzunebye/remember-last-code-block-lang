@@ -17,46 +17,48 @@ function debounce<T extends (...args: unknown[]) => void>(
 }
 
 export function createLanguageTracker(plugin: RememberCodeBlockLangPlugin) {
-    // Debounced save function to avoid excessive disk writes
+    let pendingLineNumber: number | null = null;
     const debouncedSave = debounce(async (language: string) => {
-        if (language && language !== plugin.settings.lastUsedLanguage) {
+        if (language !== plugin.settings.lastUsedLanguage) {
             plugin.settings.lastUsedLanguage = language;
             await plugin.saveSettings();
         }
     }, 300);
 
     return EditorView.updateListener.of((update: ViewUpdate) => {
-        // Only process document changes
-        if (!update.docChanged) {
+        if (!update.docChanged && !update.selectionSet) {
             return;
         }
 
-        // Check each change to see if it affects a code block info line
-        update.changes.iterChanges((fromA, toA, fromB, toB) => {
-            // Get the affected range in the new document
-            const doc = update.state.doc;
+        const doc = update.state.doc;
+        if (update.docChanged) {
+            update.changes.iterChanges((_fromA, _toA, fromB, toB) => {
+                const startLine = doc.lineAt(fromB);
+                const endLine = doc.lineAt(Math.min(toB, doc.length));
 
-            // Check lines that were affected by the change
-            const startLine = doc.lineAt(fromB);
-            const endLine = doc.lineAt(Math.min(toB, doc.length));
-
-            for (let lineNum = startLine.number; lineNum <= endLine.number; lineNum++) {
-                const line = doc.line(lineNum);
-                const lineText = line.text.trim();
-
-                // Check if this line is a code block opening with a language
-                // Pattern: ``` followed by word characters (language identifier)
-                const match = lineText.match(/^`{3,}([^\s`]+)/);
-
-                if (match && match[1]) {
-                    const language = normalizeLanguageIdentifier(match[1]);
-                    // Save the language (debounced)
-                    debouncedSave(language);
-                    // Only process the first match to avoid redundant saves
-                    return;
+                for (let lineNum = startLine.number; lineNum <= endLine.number; lineNum++) {
+                    if (/^\s*`{3,}/.test(doc.line(lineNum).text)) {
+                        pendingLineNumber = lineNum;
+                    }
                 }
-            }
-        });
+            });
+        }
+
+        if (pendingLineNumber === null) {
+            return;
+        }
+
+        const cursorLine = doc.lineAt(update.state.selection.main.head).number;
+        if (cursorLine === pendingLineNumber) {
+            return;
+        }
+
+        const line = doc.line(Math.min(pendingLineNumber, doc.lines));
+        const match = line.text.trim().match(/^`{3,}([^\s`]+)?\s*$/);
+        pendingLineNumber = null;
+        if (match) {
+            debouncedSave(match[1] ? normalizeLanguageIdentifier(match[1]) : '');
+        }
     });
 }
 
